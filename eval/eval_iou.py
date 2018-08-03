@@ -36,6 +36,10 @@ target_transform_cityscapes = Compose([
     ToLabel(),
     Relabel(255, 19),   #ignore label to 19
 ])
+target_fullsize_transform_cityscapes = Compose([
+    ToLabel(),
+    Relabel(255, 19),   #ignore label to 19
+])
 
 def main(args):
 
@@ -72,10 +76,15 @@ def main(args):
 
     if(not os.path.exists(args.datadir)):
         print ("Error: datadir could not be loaded")
+        
+    up = torch.nn.Upsample(scale_factor=2, mode='bilinear')
+        if not args.gpu:
+            up = up.cuda()
 
-
-    loader = DataLoader(cityscapes(args.datadir, input_transform_cityscapes, target_transform_cityscapes, subset=args.subset), num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
-
+    if args.upsample:
+        loader = DataLoader(cityscapes(args.datadir, input_transform_cityscapes, target_fullsize_transform_cityscapes, subset=args.subset), num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
+    else:
+        loader = DataLoader(cityscapes(args.datadir, input_transform_cityscapes, target_transform_cityscapes, subset=args.subset), num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
 
     iouEvalVal = iouEval(NUM_CLASSES)
 
@@ -88,6 +97,9 @@ def main(args):
 
         inputs = Variable(images, volatile=True)
         outputs = model(inputs)
+        
+        if args.upsample:
+            outputs = up(outputs)
 
         iouEvalVal.addBatch(outputs.max(1)[1].unsqueeze(1).data, labels)
 
@@ -144,5 +156,6 @@ if __name__ == '__main__':
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--cpu', action='store_true')
+    parser.add_argument('--upsample', action='store_true') #evaluate results in original image size
 
     main(parser.parse_args())
