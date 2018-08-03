@@ -94,6 +94,10 @@ def main(args):
     print ("Model and weights LOADED successfully")
 
     model.eval()
+    
+    up = torch.nn.Upsample(scale_factor=2, mode='bilinear')
+    if not args.cpu:
+        up = up.cuda()
 
     if(not os.path.exists(args.datadir)):
         print ("Error: datadir could not be loaded")
@@ -116,6 +120,9 @@ def main(args):
         inputs = Variable(images, volatile=True)
         #targets = Variable(labels, volatile=True)
         outputs = model(inputs)
+        
+        if args.upsample:
+            outputs = up(outputs)
 
         label = outputs[0].max(0)[1].byte().cpu().data
         #label_cityscapes = cityscapes_trainIds2labelIds(label.unsqueeze(0))
@@ -149,4 +156,5 @@ if __name__ == '__main__':
     parser.add_argument('--cpu', action='store_true')
 
     parser.add_argument('--visualize', action='store_true')
+    parser.add_argument('--upsample', action='store_true') #evaluate results in original image size
     main(parser.parse_args())
