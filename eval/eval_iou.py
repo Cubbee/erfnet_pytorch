@@ -78,8 +78,8 @@ def main(args):
         print ("Error: datadir could not be loaded")
         
     up = torch.nn.Upsample(scale_factor=2, mode='bilinear')
-        if not args.gpu:
-            up = up.cuda()
+    if not args.cpu:
+        up = up.cuda()
 
     if args.upsample:
         loader = DataLoader(cityscapes(args.datadir, input_transform_cityscapes, target_fullsize_transform_cityscapes, subset=args.subset), num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
