@@ -108,7 +108,8 @@ def train(args, model, enc=False):
 
     if args.cuda:
         weight = weight.cuda()
-    criterion = CrossEntropyLoss2d(weight)
+    #criterion = CrossEntropyLoss2d(weight)
+    criterion = CrossEntropyLoss2d()
     print(type(criterion))
 
     savedir = args.savedir
