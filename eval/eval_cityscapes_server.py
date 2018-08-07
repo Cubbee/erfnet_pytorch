@@ -108,7 +108,7 @@ def main(args):
 
         inputs = Variable(images, volatile=True)
         #targets = Variable(labels, volatile=True)
-        outputs = model(inputs)
+        outputs = model(inputs,only_encode=onlyEncoder)
 
         label = outputs[0].max(0)[1].byte().cpu().data
         label_cityscapes = cityscapes_trainIds2labelIds(label.unsqueeze(0))
@@ -136,5 +136,6 @@ if __name__ == '__main__':
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--cpu', action='store_true')
+    parser.add_argument('--onlyEncoder', action='store_true')
 
     main(parser.parse_args())
