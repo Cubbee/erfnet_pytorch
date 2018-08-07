@@ -108,7 +108,7 @@ def main(args):
 
         inputs = Variable(images, volatile=True)
         #targets = Variable(labels, volatile=True)
-        outputs = model(inputs,only_encode=onlyEncoder)
+        outputs = model(inputs,only_encode=args.onlyEncoder)
 
         label = outputs[0].max(0)[1].byte().cpu().data
         label_cityscapes = cityscapes_trainIds2labelIds(label.unsqueeze(0))
