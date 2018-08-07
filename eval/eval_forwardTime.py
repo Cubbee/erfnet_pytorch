@@ -43,7 +43,7 @@ def main(args):
         start_time = time.time()
 
         inputs = Variable(images, volatile=True)
-        outputs = model(inputs)
+        outputs = model(inputs,only_encode = args.onlyEncoder)
 
         #preds = outputs.cpu()
         if (not args.cpu):
@@ -65,5 +65,6 @@ if __name__ == '__main__':
     parser.add_argument('--num-channels', type=int, default=3)
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--cpu', action='store_true')
+    parser.add_argument('--onlyEncoder', action='store_true')
 
     main(parser.parse_args())
