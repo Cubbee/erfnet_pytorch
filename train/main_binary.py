@@ -90,11 +90,11 @@ def train(args, model, enc=False):
 
     weight = torch.ones(NUM_CLASSES)
     if (enc):        
-        weight[0] = 5.3659925460815
+        weight[0] = 4.38133159
+        weight[1] = 1.29574148
     else:
-        weight[0] = 10.026463508606
-
-    weight[1] = 0
+        weight[0] = 4.40513628
+        weight[1] = 1.293674
 
     assert os.path.exists(args.datadir), "Error: datadir (dataset directory) could not be loaded"
 
@@ -108,8 +108,12 @@ def train(args, model, enc=False):
 
     if args.cuda:
         weight = weight.cuda()
-    #criterion = CrossEntropyLoss2d(weight)
-    criterion = CrossEntropyLoss2d()
+  
+    if args.weighted:
+        criterion = CrossEntropyLoss2d(weight)
+    else:            
+        criterion = CrossEntropyLoss2d()
+        
     print(type(criterion))
 
     savedir = args.savedir
@@ -468,5 +472,5 @@ if __name__ == '__main__':
     parser.add_argument('--iouTrain', action='store_true', default=False) #recommended: False (takes more time to train otherwise)
     parser.add_argument('--iouVal', action='store_true', default=True)  
     parser.add_argument('--resume', action='store_true')    #Use this flag to load last checkpoint for training  
-
+    parser.add_argument('--weighted', action='store_true')    #Use this flag to weight the classes according to their size
     main(parser.parse_args())
