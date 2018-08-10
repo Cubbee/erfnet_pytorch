@@ -20,7 +20,7 @@ import torch.backends.cudnn as cudnn
 cudnn.benchmark = True
 
 def main(args):
-    model = ERFNet(19)
+    model = ERFNet(args.classes)
     if (not args.cpu):
         model = model.cuda()#.half()	#HALF seems to be doing slower for some reason
     #model = torch.nn.DataParallel(model).cuda()
@@ -66,5 +66,6 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--cpu', action='store_true')
     parser.add_argument('--onlyEncoder', action='store_true')
+    parser.add_argument('--classes', type=int, default=20)
 
     main(parser.parse_args())
