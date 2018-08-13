@@ -173,7 +173,7 @@ def train(args, model, enc=False):
         doIouVal =  args.iouVal      
 
         if (doIouTrain):
-            iouEvalTrain = iouEval(NUM_CLASSES, ignoreindex)
+            iouEvalTrain = iouEval(NUM_CLASSES, args.ignoreindex)
 
         usedLr = 0
         for param_group in optimizer.param_groups:
@@ -250,7 +250,7 @@ def train(args, model, enc=False):
         time_val = []
 
         if (doIouVal):
-            iouEvalVal = iouEval(NUM_CLASSES, ignoreindex)
+            iouEvalVal = iouEval(NUM_CLASSES, args.ignoreindex)
 
         for step, (images, labels) in enumerate(loader_val):
             start_time = time.time()
