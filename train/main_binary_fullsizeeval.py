@@ -63,10 +63,13 @@ class MyCoTransform(object):
             target = target.crop((0, 0, target.size[0]-transX, target.size[1]-transY))   
 
         input = ToTensor()(input)
+        input_orig = ToTensor()(input_orig)
         if (self.enc):
             target = Resize(int(self.height/8), Image.NEAREST)(target)
         target = ToLabel()(target)
+        target_orig = ToLabel()(target_orig)
         target = Relabel(255, 1)(target)
+        target_orig = Relabel(255, 1)(target_orig)
 
         return input, target, input_orig, target_orig
 
