@@ -358,7 +358,7 @@ def save_checkpoint(state, is_best, filenameCheckpoint, filenameBest):
 
 
 def main(args):
-    savedir = f'../save/{args.savedir}'
+    savedir = args.savedir
 
     if not os.path.exists(savedir):
         os.makedirs(savedir)
@@ -378,16 +378,6 @@ def main(args):
     if args.state:
         #if args.state is provided then load this state for training
         #Note: this only loads initialized weights. If you want to resume a training use "--resume" option!!
-        """
-        try:
-            model.load_state_dict(torch.load(args.state))
-        except AssertionError:
-            model.load_state_dict(torch.load(args.state,
-                map_location=lambda storage, loc: storage))
-        #When model is saved as DataParallel it adds a model. to each key. To remove:
-        #state_dict = {k.partition('model.')[2]: v for k,v in state_dict}
-        #https://discuss.pytorch.org/t/prefix-parameter-names-in-saved-model-if-trained-by-multi-gpu/494
-        """
         def load_my_state_dict(model, state_dict):  #custom function to load model when not all dict keys are there
             own_state = model.state_dict()
             for name, param in state_dict.items():
@@ -398,31 +388,6 @@ def main(args):
 
         #print(torch.load(args.state))
         model = load_my_state_dict(model, torch.load(args.state))
-
-    """
-    def weights_init(m):
-        classname = m.__class__.__name__
-        if classname.find('Conv') != -1:
-            #m.weight.data.normal_(0.0, 0.02)
-            n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            m.weight.data.normal_(0, math.sqrt(2. / n))
-        elif classname.find('BatchNorm') != -1:
-            #m.weight.data.normal_(1.0, 0.02)
-            m.weight.data.fill_(1)
-            m.bias.data.fill_(0)
-
-    #TO ACCESS MODEL IN DataParallel: next(model.children())
-    #next(model.children()).decoder.apply(weights_init)
-    #Reinitialize weights for decoder
-    
-    next(model.children()).decoder.layers.apply(weights_init)
-    next(model.children()).decoder.output_conv.apply(weights_init)
-
-    #print(model.state_dict())
-    f = open('weights5.txt', 'w')
-    f.write(str(model.state_dict()))
-    f.close()
-    """
 
     #train(args, model)
     if (not args.decoder):
@@ -454,7 +419,6 @@ if __name__ == '__main__':
     parser.add_argument('--cuda', action='store_true', default=True)  #NOTE: cpu-only has not been tested so you might have to change code if you deactivate this flag
     parser.add_argument('--model', default="erfnet")
     parser.add_argument('--state')
-
     parser.add_argument('--port', type=int, default=8097)
     parser.add_argument('--datadir', default=os.getenv("HOME") + "/datasets/cityscapes/")
     parser.add_argument('--height', type=int, default=512)
@@ -468,7 +432,6 @@ if __name__ == '__main__':
     parser.add_argument('--decoder', action='store_true')
     parser.add_argument('--pretrainedEncoder') #, default="../trained_models/erfnet_encoder_pretrained.pth.tar")
     parser.add_argument('--visualize', action='store_true')
-
     parser.add_argument('--iouTrain', action='store_true', default=False) #recommended: False (takes more time to train otherwise)
     parser.add_argument('--iouVal', action='store_true', default=True)  
     parser.add_argument('--resume', action='store_true')    #Use this flag to load last checkpoint for training  
