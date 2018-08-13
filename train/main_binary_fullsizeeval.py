@@ -184,7 +184,7 @@ def train(args, model, enc=False):
         doIouVal =  args.iouVal      
 
         if (doIouTrain):
-            iouEvalTrain = iouEval(NUM_CLASSES)
+            iouEvalTrain = iouEval(NUM_CLASSES, ignoreindex)
 
         usedLr = 0
         for param_group in optimizer.param_groups:
@@ -262,7 +262,7 @@ def train(args, model, enc=False):
         time_val = []
 
         if (doIouVal):
-            iouEvalVal = iouEval(NUM_CLASSES)
+            iouEvalVal = iouEval(NUM_CLASSES, ignoreindex)
 
         for step, (images, labels, images_orig, labels_orig) in enumerate(loader_val):
             start_time = time.time()
@@ -449,4 +449,5 @@ if __name__ == '__main__':
     parser.add_argument('--iouVal', action='store_true', default=True)  
     parser.add_argument('--resume', action='store_true')    #Use this flag to load last checkpoint for training  
     parser.add_argument('--weighted', action='store_true')    #Use this flag to weight the classes according to their size
+    parser.add_argument('--ignoreindex', type=int, default=-1) #index of class that will be ignored for IOU eval (-1 = none, 1 = background)
     main(parser.parse_args())
