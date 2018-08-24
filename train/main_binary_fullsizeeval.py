@@ -253,7 +253,7 @@ def train(args, model, enc=False):
         if (doIouTrain):
             iouTrain, iou_classes = iouEvalTrain.getIoU()
             iouStr = getColorEntry(iouTrain)+'{:0.2f}'.format(iouTrain*100) + '\033[0m'
-            print ("EPOCH IoU on TRAIN set: ", iouStr, "%")  
+            print ("EPOCH IoU on TRAIN set: ", iouStr, "%", iou_classes)  
 
         #Validate on 500 val images after each epoch of training
         print("----- VALIDATING - EPOCH", epoch, "-----")
@@ -312,7 +312,7 @@ def train(args, model, enc=False):
         if (doIouVal):
             iouVal, iou_classes = iouEvalVal.getIoU()
             iouStr = getColorEntry(iouVal)+'{:0.2f}'.format(iouVal*100) + '\033[0m'
-            print ("EPOCH IoU on VAL set: ", iouStr, "%") 
+            print ("EPOCH IoU on VAL set: ", iouStr, "%", iou_classes) 
            
 
         # remember best valIoU and save checkpoint
