@@ -252,7 +252,7 @@ def train(args, model, enc=False):
         iouTrain = 0
         if (doIouTrain):
             _, iou_classes = iouEvalTrain.getIoU()
-            iouTrain = iou_classes[0].item()
+            iouTrain = iou_classes[0]
             iouStr = getColorEntry(iouTrain)+'{:0.2f}'.format(iouTrain*100) + '\033[0m'
             print ("EPOCH IoU on TRAIN set: ", iouStr, "%", iou_classes)  
 
@@ -312,7 +312,7 @@ def train(args, model, enc=False):
         iouVal = 0
         if (doIouVal):
             _, iou_classes = iouEvalVal.getIoU()
-            iouVal = iou_classes[0].item()
+            iouVal = iou_classes[0]
             iouStr = getColorEntry(iouVal)+'{:0.2f}'.format(iouVal*100) + '\033[0m'
             print ("EPOCH IoU on VAL set: ", iouStr, "%", iou_classes) 
            
