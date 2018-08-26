@@ -95,6 +95,14 @@ def train(args, model, enc=False):
     else:
         weight[0] = 4.40513628
         weight[1] = 1.293674
+        
+    weight_new = torch.ones(NUM_CLASSES)
+    if (enc):        
+        weight_new[0] = 2.35864154 
+        weight_new[1] = 1.59490491
+    else:
+        weight_new[0] = 2.81672577
+        weight_new[1] = 1.74484367
 
     assert os.path.exists(args.datadir), "Error: datadir (dataset directory) could not be loaded"
 
@@ -111,6 +119,8 @@ def train(args, model, enc=False):
   
     if args.weighted:
         criterion = CrossEntropyLoss2d(weight)
+    elif args.weighted_new:
+        criterion = CrossEntropyLoss2d(weight_new)
     else:            
         criterion = CrossEntropyLoss2d()
         
@@ -438,6 +448,7 @@ if __name__ == '__main__':
     parser.add_argument('--iouVal', action='store_true', default=True)  
     parser.add_argument('--resume', action='store_true')    #Use this flag to load last checkpoint for training  
     parser.add_argument('--weighted', action='store_true')    #Use this flag to weight the classes according to their size
+    parser.add_argument('--weighted_new', action='store_true')    #Use this flag to weight the classes according to their size
     parser.add_argument('--trainInOneGo', action='store_true')    #train the decoder directly after encoder finishes even though comments say not to
     parser.add_argument('--ignoreindex', type=int, default=-1) #index of class that will be ignored for IOU eval (-1 = none, 1 = background)
     main(parser.parse_args())
