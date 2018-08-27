@@ -116,6 +116,7 @@ def train(args, model, enc=False):
 
     if args.cuda:
         weight = weight.cuda()
+        weight_new = weight-new.cuda()
   
     if args.weighted:
         criterion = CrossEntropyLoss2d(weight)
