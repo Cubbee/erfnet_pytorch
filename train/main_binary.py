@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, CenterCrop, Normalize, Resize, Pad
 from torchvision.transforms import ToTensor, ToPILImage
 
-from dataset import VOC12,cityscapes
+from dataset import VOC12,cityscapes,apex
 from transform import Relabel, ToLabel, Colorize
 from visualize import Dashboard
 
@@ -108,9 +108,14 @@ def train(args, model, enc=False):
 
     co_transform = MyCoTransform(enc, augment=True, height=args.height)#1024)
     co_transform_val = MyCoTransform(enc, augment=False, height=args.height)#1024)
-    dataset_train = cityscapes(args.datadir, co_transform, 'train')
-    dataset_val = cityscapes(args.datadir, co_transform_val, 'val')
-
+    
+    if args.apex:    
+        dataset_train = apex(args.datadir, co_transform, 'train')
+        dataset_val = apex(args.datadir, co_transform_val, 'val')
+    else:
+        dataset_train = cityscapes(args.datadir, co_transform, 'train')
+        dataset_val = cityscapes(args.datadir, co_transform_val, 'val')
+        
     loader = DataLoader(dataset_train, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=True)
     loader_val = DataLoader(dataset_val, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
 
@@ -443,6 +448,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs-save', type=int, default=0)    #You can use this value to save model every X epochs
     parser.add_argument('--savedir', required=True)
     parser.add_argument('--decoder', action='store_true')
+    parser.add_argument('--apex', action='store_true')
     parser.add_argument('--pretrainedEncoder') #, default="../trained_models/erfnet_encoder_pretrained.pth.tar")
     parser.add_argument('--visualize', action='store_true')
     parser.add_argument('--iouTrain', action='store_true', default=False) #recommended: False (takes more time to train otherwise)
