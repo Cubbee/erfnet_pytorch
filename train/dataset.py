@@ -104,11 +104,11 @@ class cityscapes(Dataset):
 class apex(Dataset):
 
     def __init__(self, root, co_transform=None, subset='train'):
-        self.images_root += subset
-        self.labels_root += subset
-        
-        self.images_root = os.path.join(root, '/images')
-        self.labels_root = os.path.join(root, '/labels')
+        self.images_root = os.path.join(root, subset)
+        self.labels_root = os.path.join(root, subset)
+                                        
+        self.images_root += '/images'
+        self.labels_root += '/labels'
 
         print (self.images_root)
         #self.filenames = [image_basename(f) for f in os.listdir(self.images_root) if is_image(f)]
